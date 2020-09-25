@@ -1,0 +1,37 @@
+The following are the details of the assignment.
+
+Objective1: Create a heuristic-based linguistic model as a service(API) for detecting actionable items from emails i.e. a rule-based model to classify sentences to actionable sentences and non-actionable sentences.
+
+This step also needs you to download the dataset and preprocess the emails and break them into meaningful sentences.
+
+Objective2: Once done with Objective1 ping for some pre-tagged action item sentences (One label only). Then train a model to detect whether a given sentence is an actionable item or not. 
+
+NB: You will be given ONLY the action item sentences, you might need to use your model from objective 1 to get the Non-actionable sentences.
+
+Actionable item => A sentence which asks someone to do something
+example: "Please create an assignment and forward it by EOD"
+
+-------------------------------------------------------
+About data set:
+The data set contains below 1 CSV file:
+1.Enron email dataset
+
+Download dataset from the following link.
+https://www.kaggle.com/wcukierski/enron-email-dataset
+
+-------------------------------------------------------
+Instructions:
+
+Please create a private repository in Github and share it with git userid 'huddlhire'. We ABSOLUTELY should be able to see your check-ins/commits from the beginning and NOT just a single commit at the end. Include instructions on how to run the project and set up the requirements. Kindly, ensure that the entire project is repeatable from scratch i.e. from raw data to the final model.
+  
+Explain the following things in README of Github
+
+    1) Explain your project pipeline.
+    2) Explain in detail the process of feature extraction.   
+    3) Report recall, precision, and F1 measure
+    4) Explain the challenges you've faced while building the model.
+
+
+Feel free to contact me in case of doubts regarding datasets or instructions.
+
+Disclaimer: We expect your code/approach to be free from plagiarism. Please reference any StackOverflow link or implementation detail you use in your code comments and docstrings.
