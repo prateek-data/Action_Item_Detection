@@ -9,6 +9,9 @@ Created on Fri Sep 25 12:48:15 2020
 import nltk
 from nltk import RegexpParser
 from nltk.tree import Tree
+import re
+import spacy
+nlp = spacy.load('en_core_web_md') 
 
 firstWordQues = ['when', 'why', 'will', 'wont', 'where', 'is', 'who', 'do' , 'can', 'could', 'would']
 
@@ -25,7 +28,7 @@ def chunk_matcher(posTaggedSent):
     return chunkparser.parse(posTaggedSent)  
 
 
-def action_item_matcher(posTaggedSent): 
+def nltk_matcher(posTaggedSent): 
     #conditions for action item classification
     if posTaggedSent[0][1] == "VB" and posTaggedSent[-1][0] != "?":
         return True
@@ -43,26 +46,61 @@ def action_item_matcher(posTaggedSent):
         else:
             return False
         
-def check_sentence(sentence):
-    #checks if individual sentence is an action item or not
+
+def spacy_matcher(doc):
+    if (doc[0].tag_ == 'VB') and (doc[-1].text != '?'):
+        return True
+    
+    elif doc[0].text.lower() in firstWordQues:
+        return False
+    
+    else:
+        tagList = []
+        for token in doc:
+            tagList.append(token.tag_)
+        tagString = " ".join(tagList)
+        matchObj = re.search(r"(VB DT (JJ )*NN.?)|(VB PRP DT (JJ )*NN.?)|(UH VB)", tagString)
+        if matchObj != None:
+            return True
+        
+        else:
+            return False
+    
+        
+def nltk_check_sentence(sentence):
+    #checks if individual sentence is actionable or not using nltk 
     tokenList = nltk.word_tokenize(sentence)
     posTaggedSent = nltk.pos_tag(tokenList)    
-    result = action_item_matcher(posTaggedSent)
+    result = nltk_matcher(posTaggedSent)
     return result
 
     
-def check_email_list(sentList):
+def nltk_check_email_list(sentList):
     #run nlp algorithm on list of enron emails to find actionable and non actionable sentences
     resultList = []
     for sentence in sentList:
         tokenList = nltk.word_tokenize(sentence)
         posTaggedSent = nltk.pos_tag(tokenList)    
-        result = action_item_matcher(posTaggedSent) 
+        result = nltk_matcher(posTaggedSent) 
         resultList.append((sentence, result))
     return resultList
-        
-        
-        
+
+
+def spacy_check_sentence(sentence):
+    #checks if individual sentence is actionable or not using spacy
+    doc = nlp(sentence)
+    result = spacy_matcher(doc)
+    return result
+    
+    
+def spacy_check_email_list(sentList):
+    #run nlp algorithm on list of enron emails to find actionable and non actionable sentences        
+    resultList = []
+    for sentence in sentList:
+        doc = nlp(sentence)
+        result = spacy_matcher(doc)
+        resultList.append((sentence, result))
+    return resultList        
     
 
 
