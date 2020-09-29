@@ -15,6 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_recall_fscore_support
 
 
 nlp = spacy.load('en_core_web_md') 
@@ -66,7 +67,7 @@ def get_features(textList, gtList):
     
    
 def data_split(featureArray, gtArray):
-     trainX, testX, trainY, testY =  train_test_split(featureArray, gtArray, test_size = 0.25, random_state= 42)
+     trainX, testX, trainY, testY =  train_test_split(featureArray, gtArray, test_size = 0.2, random_state= 42)
      return (trainX, testX, trainY, testY)
  
  
@@ -76,7 +77,15 @@ def classify_logistic(trainX, testX, trainY, testY):
     
     acc = accuracy_score(testY, pred)
     print(acc)
-    return (clf, acc)
+    precision, recall, f1score, support = precision_recall_fscore_support(testY, pred, average='binary')
+    
+    metrics = {}
+    metrics['Accuracy'] = acc
+    metrics['Precision'] = precision
+    metrics['Recall'] = recall
+    metrics['F1Score'] = f1score
+    
+    return (clf, metrics)
     
     
 def classify_random_forest(trainX, testX, trainY, testY):
@@ -85,38 +94,81 @@ def classify_random_forest(trainX, testX, trainY, testY):
     
     acc = accuracy_score(testY, pred)
     print(acc)
-    return (clf, acc)
+    
+    precision, recall, f1score, support = precision_recall_fscore_support(testY, pred, average='binary')
+    
+    metrics = {}
+    metrics['Accuracy'] = acc
+    metrics['Precision'] = precision
+    metrics['Recall'] = recall
+    metrics['F1Score'] = f1score
+    
+    return (clf, metrics)
     
 
-def save_model(clf, name):
+def save_ml_model(clf, name):
+    #save serialized version of ml model
     with open('Saved_Models/' + name + '.pkl', 'wb') as f:
         pickle.dump(clf, f)
+        
+        
+def load_ml_model(name):
+    #load serialized version of ml model
+    with open('Saved_Models/' + name + '.pkl', 'rb') as f:
+        clf = pickle.load(f) 
+    return clf
     
-   
+    
+def run_ml_inference(clf, sentence):
+    #run inference on ml classifier
+    allTextdf =  pd.read_csv("allText.csv")
+    allText = list(allTextdf.T.to_dict().values())
+    for d in allText:
+        del d['Unnamed: 0']
+        
+    textList, gtList = data_loader(allText)
+    
+    tagList = []   
+    for text in textList:
+        tagString = ""
+        doc = nlp(text)
+        
+        for token in doc:
+            if token == doc[-1]:
+                tagString += (token.tag_)
+            else:
+                tagString += (token.tag_ + " ")
+    
+        tagList.append(tagString)
+        
+    #prepare TF-IDF vectors
+    vectorizer1 = TfidfVectorizer(ngram_range = (2,4))
+    vectorizer2 = TfidfVectorizer(ngram_range = (2,2))
+    #posArray = vectorizer.fit_transform(posList).toarray()
+    vectorizer1.fit_transform(tagList).toarray()
+    vectorizer2.fit_transform(textList).toarray()
     
     
+    doc = nlp(sentence)
+    tagString = ""
+    for token in doc:
+        if token == doc[-1]:
+            tagString += (token.tag_)
+        else:
+            tagString += (token.tag_ + " ")
+    text2tagArray = vectorizer1.transform([tagString]).toarray()
+    text2textArray = vectorizer2.transform([sentence]).toarray()
+    
+    text2featureArray =  np.column_stack((text2tagArray, text2textArray))   
+    pred = clf.predict(text2featureArray)
+    
+    if pred[0] == 1:
+        return "Actionable"
+    else:
+        return "Non Actionable"
         
     
-text = 'She is available for inter views about her familys flight from Saigon and her American success story.'
-text  = "Hello how are you feeling today?"
-doc = nlp(text)
-tagString = ""
-for token in doc:
-    if token == doc[-1]:
-        tagString += (token.tag_)
-    else:
-        tagString += (token.tag_ + " ")
 
-
-
-
-text2tagArray = vectorizer1.transform([tagString]).toarray()
-text2textArray = vectorizer2.transform([text]).toarray()
-    
-text2featureArray =  np.column_stack((text2tagArray, text2textArray))   
-#text2featureArray = text2tagArray 
-textPred = clf.predict(text2featureArray)
-print(textPred)
         
         
         
