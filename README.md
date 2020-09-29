@@ -17,3 +17,32 @@ API Endpoints:
 - **/nlp_matcher** : Runs NLP rule match algorithm.
 - **/ml_classifier** : Runs Machine Learning classifier.
 - **/dl_model** : Runs Deep Learning model.
+
+## Project Structure
+
+| Files |	Description |
+| ------------- | ------------- |
+| download_script.py	| Downloads and installs additional files/dependencies. |
+| data_preprocessing.py |	Code to process Enron email dataset. |
+| nlp_rule_match.py |	Code for Rule based logic. |
+| ml_classifier.py	| Code to train and test Machine Learning models. |
+| dl_models.py |	Code to train and test Deep Learning models. |
+| run_pipeline.py |	Code to execute entire pipeline. |
+| server.py |	Code for Flask api. |
+
+## Project PipeLine
+1. Load Enron emails and take a sample of 5,000 emails to work on due to memory constraints.
+2. Process the emails by extracting message from payload, cleaning the text and tokenizing then into sentences.
+3. Use Spacy + Regex logic to create a rule based matcher to classify sentences into Actionable or not.
+4. Select 1250 Non Actionable sentences from the Rule based model and add them to Actionable sentences provided by actions.csv file to create dataset.
+5. Use dataset to create TF-IDF word embeddings to train and test Machine Learning models.
+6. Load Glove Word Embeddings to map dataset text to vectors and use it to train and test Deep Learning models.
+
+
+
+
+
+
+
+
+
