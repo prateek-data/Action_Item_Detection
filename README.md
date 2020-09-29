@@ -31,7 +31,7 @@ API Endpoints:
 | server.py |	Code for Flask api. |
 
 ## Project PipeLine
-<br/>
+
 1. Load Enron emails and take a sample of 5,000 emails to work on due to memory constraints.
 2. Process the emails by extracting message from payload, cleaning the text and tokenizing then into sentences.
 3. Use Spacy + Regex logic to create a rule based matcher to classify sentences into Actionable or not.
@@ -53,6 +53,17 @@ API Endpoints:
 **Deep Learning Models** <br/>
 1. Load pretrained Glove embeddings and map every word in corpus to its vector form.
 2. Use Glove vector mappings to train LSTM and CNN models. <br/>
+
+## Performance Metrics
+
+| Model	| Accuracy | Precision |	Recall |	F1 Score |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| Logistic Regression |	90.00 |	94.56 |	84.88 |	89.46 |
+| Random Forest |	88.60 |	92.43 |	84.08 |	88.06 |
+| LSTM |	94.80 |	94.11 |	94.91 |	94.51 |
+| CNN |	89.80 |	94.68 |	83.05 |	88.48 |
+
+## Challenges
 
 
 
