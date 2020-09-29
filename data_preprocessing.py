@@ -16,6 +16,7 @@ import random
 
 
 ipCsv = "Datasets/emails.csv"
+actionCsv = "Datasets/actions.csv"
 
 
 def process_enron(ipCsv):
@@ -93,8 +94,8 @@ def process_enron_sample(ipCsv, sampleSize):
     sentList = []
     for idx, mail in enumerate(updatedEmailList):
         updatedEmailList[idx] = nltk.sent_tokenize(mail)
-             
-    sentList = [item for sublist in updatedEmailList for item in sublist if len(item) <= 35 ]        
+              
+    sentList = [item for sublist in updatedEmailList for item in sublist if (3 < len(item.split()) <= 35) ]        
     return sentList
     
 
@@ -110,7 +111,6 @@ def sample_sentences(sentList, sampleSize):
     #randomly sample 10k sentences from sentence list
     sampleList = random.sample(sentList, k= sampleSize)
     return sampleList
-
 
 
     
