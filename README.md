@@ -4,7 +4,8 @@ Code to classify text/email sentences as action items or not
 ## How to execute the project
 1. `pip install -r requirements.txt` to download package dependencies.
 2. Run `download_script.py` to download additional dependencies.
-3. Download Enron Dataset from https://www.kaggle.com/wcukierski/enron-email-dataset and place emails.csv in Datasets folder.
+3. Download Enron Dataset from https://www.kaggle.com/wcukierski/enron-email-dataset and store them as `Datasets/emails.csv`.
+4. Download Glove embeddings from http://nlp.stanford.edu/data/glove.6B.zip and place them as `Datasets/glove.6B/glove.6B.100d.txt`.
 4. Run `server.py` to launch Flask api.
 5. Run `run_pipeline.py` to execute entire code pipeline.
 
