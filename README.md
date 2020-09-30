@@ -64,6 +64,10 @@ API Endpoints:
 | CNN |	89.80 |	94.68 |	83.05 |	88.48 |
 
 ## Challenges
+- Writing rules to capture actionable sequences in text.
+- Implementing pos-tag based chunking using Spacy and Regex.
+- Processing the complete Enron dataset (memory constraints).
+- Small training dataset. 
 
 
 

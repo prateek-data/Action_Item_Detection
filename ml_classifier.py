@@ -14,6 +14,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_recall_fscore_support
 
@@ -22,6 +23,7 @@ nlp = spacy.load('en_core_web_md')
 
 
 def data_loader(allText):
+    #load data
     textList = []
     gtList = []
     for item in allText:
@@ -30,6 +32,7 @@ def data_loader(allText):
     return textList, gtList
 
 def get_features(textList, gtList):    
+    #prepare features
     tagList = []
     posList = []     
     for text in textList:
@@ -57,7 +60,6 @@ def get_features(textList, gtList):
     
     
     #prepare features and labels
-    
     featureArray = np.column_stack((tagArray, textArray))
     #featureArray = tagArray
     gtList = [1 if item == True else 0 for item in gtList ]
@@ -71,13 +73,14 @@ def data_split(featureArray, gtArray):
      return (trainX, testX, trainY, testY)
  
  
-def classify_logistic(trainX, testX, trainY, testY):
-    clf = LogisticRegression().fit(trainX, trainY)
-    pred = clf.predict(testX)
+def classify_logistic(trainX, trainY, featureArray, gtArray):
+    #train logistic regression classifier and test using kfold cross validation
+    clf = LogisticRegression().fit(trainX, trainY)    
+    pred = cross_val_predict(clf, featureArray, gtArray, cv = 5)
     
-    acc = accuracy_score(testY, pred)
+    acc = accuracy_score(gtArray, pred)
     print(acc)
-    precision, recall, f1score, support = precision_recall_fscore_support(testY, pred, average='binary')
+    precision, recall, f1score, support = precision_recall_fscore_support(gtArray, pred, average='binary')
     
     metrics = {}
     metrics['Accuracy'] = acc
@@ -88,14 +91,15 @@ def classify_logistic(trainX, testX, trainY, testY):
     return (clf, metrics)
     
     
-def classify_random_forest(trainX, testX, trainY, testY):
-    clf = RandomForestClassifier(max_depth=2).fit(trainX, trainY)
-    pred = clf.predict(testX)
-    
-    acc = accuracy_score(testY, pred)
+def classify_random_forest(trainX, trainY, featureArray, gtArray):
+    #train and test random forest classifier
+    clf = RandomForestClassifier(max_depth=30).fit(trainX, trainY)
+    pred = cross_val_predict(clf, featureArray, gtArray, cv = 5)
+        
+    acc = accuracy_score(gtArray, pred)
     print(acc)
     
-    precision, recall, f1score, support = precision_recall_fscore_support(testY, pred, average='binary')
+    precision, recall, f1score, support = precision_recall_fscore_support(gtArray, pred, average='binary')
     
     metrics = {}
     metrics['Accuracy'] = acc
@@ -121,7 +125,7 @@ def load_ml_model(name):
     
 def run_ml_inference(clf, sentence):
     #run inference on ml classifier
-    allTextdf =  pd.read_csv("allText.csv")
+    allTextdf =  pd.read_csv("Datasets/allText.csv")
     allText = list(allTextdf.T.to_dict().values())
     for d in allText:
         del d['Unnamed: 0']
