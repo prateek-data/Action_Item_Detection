@@ -28,10 +28,8 @@ def nlp_matcher():
     assert request.path == '/nlp_matcher'
     assert request.method == 'POST'
     
-    
     data = request.json    
     sentence = data['Text']
-    
     result = spacy_check_sentence(sentence)
     
     if result != None:
