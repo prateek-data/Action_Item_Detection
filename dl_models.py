@@ -16,16 +16,10 @@ from keras.layers import Conv1D, MaxPooling1D, Flatten
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_recall_fscore_support
-
-
-
-allTextdf =  pd.read_csv("allText.csv")
-allText = list(allTextdf.T.to_dict().values())
-for d in allText:
-    del d['Unnamed: 0']
     
 
 def data_loader(allText):
+    #load data 
     textList = []
     gtList = []
     for item in allText:
@@ -34,8 +28,8 @@ def data_loader(allText):
     return textList, gtList
 
 
-def data_split(featureArray, gtArray):
-     trainX, testX, trainY, testY =  train_test_split(featureArray, gtArray, test_size = 0.25, random_state= 42)
+def data_split(featureData, gtArray):
+     trainX, testX, trainY, testY =  train_test_split(featureData, gtArray, test_size = 0.2, random_state= 42)
      return (trainX, testX, trainY, testY)
 
 def data_processing(textList, gtList):
@@ -161,7 +155,7 @@ def evaluate_model(model, testX, testY):
     
 def run_dl_inference(model, sentence):
     #run inference on deep learning model
-    allTextdf =  pd.read_csv("allText.csv")
+    allTextdf =  pd.read_csv("Datasets/allText.csv")
     allText = list(allTextdf.T.to_dict().values())
     for d in allText:
         del d['Unnamed: 0']
