@@ -1,5 +1,5 @@
 # Action_Item_Detection
-Code to classify text/email sentences as action items or not 
+Code to classify text/email sentences as action items or not. 
 
 ## How to execute the project
 1. `pip install -r requirements.txt` to download package dependencies.
